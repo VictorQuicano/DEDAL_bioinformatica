@@ -2,13 +2,35 @@
 This package contains all the necessary tools to reproduce the experiments presented in the [dedal paper](https://www.biorxiv.org/content/10.1101/2021.11.15.468653v2).
 
 ## Install
-To install dedal, it is necessary to clone the google-research repo:
+This repository is a standalone extraction of the `dedal` package from
+[google-research](https://github.com/google-research/google-research). Clone it
+and install in editable mode:
 ```
-git clone https://github.com/google-research/google-research.git
+python3 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip          # editable installs require pip >= 21.3
+pip install -e .
 ```
-From the `google_research` folder, you may install the necessary requirements by executing:
+
+A few submodules pull in heavier third-party packages that the core inference
+path does not need. Install them on demand:
 ```
-pip install -r dedal/requirements.txt
+pip install -e ".[homology]"        # scipy, for dedal.models.homology
+pip install -e ".[nlp]"             # seqio, for dedal.data.loaders
+pip install -e ".[preprocessing]"   # apache-beam, for dedal.preprocessing.*
+pip install -e ".[all]"             # everything
+```
+
+The editable install is what makes the internal `from dedal import ...` imports
+resolve. Without it, running any module or notebook from this folder fails with
+`ModuleNotFoundError: No module named 'dedal'`, because the package root is the
+repository root itself rather than a parent directory.
+
+If you use notebooks, point the Jupyter kernel at this virtualenv, then either
+import style works:
+```python
+from dedal import infer     # absolute, works from any directory
+from infer import *         # flat, only when the cwd is the repository root
 ```
 ## Pre-trained model
 

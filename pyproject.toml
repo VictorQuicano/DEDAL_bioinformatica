@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dedal"
+version = "0.1.0"
+description = "Deep embedding and alignment of protein sequences."
+requires-python = ">=3.9"
+dependencies = [
+    "absl-py>=0.7.0",
+    "gin-config>=0.4.0",
+    "numpy>=1.18.4",
+    "tensorflow>=2.3.0",
+    "tensorflow_datasets>=3.0.0",
+    "tensorflow_probability>=0.1.0",
+    "tf-models-nightly",
+    "tensorflow-hub>=0.12.0",
+    # tensorflow-hub still imports `pkg_resources`, which setuptools dropped in
+    # 81. Editable installs need PEP 660 support, added in 64.
+    "setuptools>=64,<81",
+]
+
+# The `dedal` package lives at the repository root rather than in a
+# subdirectory, so map the package name onto "." explicitly and list the
+# subpackages instead of relying on automatic discovery (which would also
+# pick up venv/, configs/ and friends).
+# Not required for inference/alignment, but imported by some submodules:
+#   scipy       -> dedal.models.homology
+#   seqio       -> dedal.data.loaders
+#   apache-beam -> dedal.preprocessing.*
+[project.optional-dependencies]
+homology = ["scipy"]
+nlp = ["seqio"]
+preprocessing = ["apache-beam"]
+all = ["scipy", "seqio", "apache-beam"]
+
+[tool.setuptools]
+packages = [
+    "dedal",
+    "dedal.data",
+    "dedal.models",
+    "dedal.preprocessing",
+    "dedal.train",
+]
+
+[tool.setuptools.package-dir]
+dedal = "."
