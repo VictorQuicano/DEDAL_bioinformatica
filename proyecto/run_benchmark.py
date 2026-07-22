@@ -1,10 +1,3 @@
-# coding=utf-8
-"""Benchmark classical Smith-Waterman against DEDAL on Pfam seed pairs.
-
-Usage:  venv/bin/python -m proyecto.run_benchmark [--per-bin 50]
-Writes: proyecto/results.csv
-"""
-
 import argparse
 import csv
 import os
@@ -23,7 +16,6 @@ FIELDS = ['family', 'name_x', 'name_y', 'len_x', 'len_y', 'pid', 'bin',
 
 
 def run_sw(pair, gap_open, gap_extend):
-    """Align one pair with the classical baseline. Returns (metrics, ms)."""
     subst = blosum.score_matrix_for(pair.seq_x, pair.seq_y)
     start = time.perf_counter()
     _, matches = sw_affine.smith_waterman_affine(
@@ -33,7 +25,6 @@ def run_sw(pair, gap_open, gap_extend):
 
 
 def run_dedal(model, pair):
-    """Align one pair with DEDAL. Returns (metrics, ms)."""
     start = time.perf_counter()
     pred = metrics.dedal_matches(model, pair.seq_x, pair.seq_y)
     elapsed_ms = (time.perf_counter() - start) * 1000
@@ -59,8 +50,6 @@ def main():
     print(f'\nLoading DEDAL from {MODEL_URL} ...')
     model = hub.load(MODEL_URL)
 
-    # The first call traces the TF graph, which costs seconds. Discard it so
-    # it does not land on whichever pair happens to be first.
     warm = dataset[0][1][0]
     metrics.dedal_matches(model, warm.seq_x, warm.seq_y)
     print('Warm-up done.\n')

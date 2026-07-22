@@ -1,14 +1,3 @@
-# coding=utf-8
-"""Tune the baseline's gap penalties on a held-out slice of pairs.
-
-The paper's baseline is the best of ~1400 (matrix, gap_open, gap_extend)
-combinations. A single untuned BLOSUM62 + (11, 1) would be a weaker baseline
-than the one DEDAL was actually compared against, so sweep at least the gap
-parameters and report the best.
-
-Usage: venv/bin/python -m proyecto.tune_gaps
-"""
-
 import numpy as np
 
 from proyecto import blosum, metrics, sampling, sw_affine
@@ -16,8 +5,6 @@ from proyecto import blosum, metrics, sampling, sw_affine
 GAP_OPENS = [9.0, 10.0, 11.0, 12.0, 13.0]
 GAP_EXTENDS = [1.0, 2.0]
 
-# A different seed from the benchmark's, so tuning does not happen on the
-# same pairs the methods are scored on.
 HELDOUT_SEED = 99
 
 
@@ -27,8 +14,6 @@ def main():
     print(f'Tuning on {len(pairs)} held-out pairs '
           f'(seed={HELDOUT_SEED}, disjoint parameters from the benchmark)\n')
 
-    # The substitution matrix does not depend on the gap penalties, so build
-    # it once per pair instead of once per configuration.
     substs = [blosum.score_matrix_for(p.seq_x, p.seq_y) for p in pairs]
 
     print(f'{"open":>5} {"ext":>4} {"mean F1":>9}')

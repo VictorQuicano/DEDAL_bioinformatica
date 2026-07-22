@@ -1,16 +1,10 @@
-# coding=utf-8
-"""Figures and summary tables from the benchmark results.
-
-Usage: venv/bin/python -m proyecto.plots [--csv proyecto/results_tuned.csv]
-"""
-
 import argparse
 import csv
 import os
 import statistics
 
 import matplotlib
-matplotlib.use('Agg')  # No display in this environment.
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 from proyecto import sampling
@@ -32,7 +26,6 @@ def load(path):
 
 
 def mean_ci(values):
-    """Mean and half-width of a 95% CI (normal approximation)."""
     mean = statistics.mean(values)
     if len(values) < 2:
         return mean, 0.0
